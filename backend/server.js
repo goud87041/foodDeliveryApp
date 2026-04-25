@@ -85,10 +85,15 @@ io.on("connection", (socket) => {
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/fooddelivery";
 
+console.log(`Starting server...`);
+console.log(`Using PORT: ${PORT}`);
+console.log(`Using MONGODB_URI: ${MONGODB_URI.replace(/:([^:@]{3,})@/, ':***@')}`); // Mask password
+console.log("Attempting to connect to MongoDB. If this hangs, check your MongoDB Atlas Network Access (IP Whitelist)...");
+
 mongoose
   .connect(MONGODB_URI)
   .then(async () => {
-    console.log("MongoDB connected");
+    console.log("MongoDB connected successfully");
     await Order.updateMany(
       { status: "out_for_delivery", deliveryBoy: { $ne: null }, deliveryResponse: null },
       { $set: { deliveryResponse: "accepted" } }
