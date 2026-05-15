@@ -14,7 +14,7 @@ export default function AdminRegister() {
     e.preventDefault();
     setBusy(true);
     try {
-      const { data } = await client.post("/admin/auth/register", {
+      const { data } = await client.post("/register", {
         name: form.name,
         email: form.email,
         password: form.password,
