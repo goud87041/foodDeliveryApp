@@ -7,6 +7,7 @@ import { AuthGateSkeleton } from "../components/Skeleton.jsx";
 
 export default function AdminLogin() {
   const [adminId, setAdminId] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
   const { login, admin, loading } = useAdminAuth();
@@ -18,8 +19,16 @@ export default function AdminLogin() {
   async function submit(e) {
     e.preventDefault();
     setBusy(true);
+    if (!adminId.trim() && !email.trim()) {
+      toast.error("Enter Admin ID or email");
+      setBusy(false);
+      return;
+    }
     try {
-      const { data } = await client.post("/admin/auth/login", { adminId, password });
+      const payload = { password };
+      if (adminId.trim()) payload.adminId = adminId.trim();
+      else payload.email = email.trim();
+      const { data } = await client.post("/admin/auth/login", payload);
       login(data.token, data.admin);
       toast.success("Welcome");
       nav("/");
@@ -35,14 +44,21 @@ export default function AdminLogin() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
       <form onSubmit={submit} className="w-full max-w-md bg-white rounded-2xl shadow-card border border-orange-100 p-8 animate-fade-in-scale">
         <h1 className="text-2xl font-bold text-orange-500">Admin login</h1>
-        <p className="text-sm text-gray-500 mt-1">Admin ID and password</p>
+        <p className="text-sm text-gray-500 mt-1">Admin ID or email, and password</p>
         <div className="mt-6 space-y-4">
           <input
             className="w-full border rounded-xl px-4 py-2.5"
             placeholder="Admin ID"
             value={adminId}
-            onChange={(e) => setAdminId(e.target.value.toUpperCase())}
-            required
+            onChange={(e) => { setAdminId(e.target.value.toUpperCase()); setEmail(""); }}
+          />
+          <p className="text-center text-xs text-gray-400">or</p>
+          <input
+            type="email"
+            className="w-full border rounded-xl px-4 py-2.5"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => { setEmail(e.target.value); setAdminId(""); }}
           />
           <input
             type="password"

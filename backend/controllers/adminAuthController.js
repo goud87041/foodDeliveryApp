@@ -32,12 +32,21 @@ export const registerAdmin = asyncHandler(async (req, res) => {
   });
 });
 
-/** Login ONLY with adminId + password */
+/** Login with adminId OR email + password */
 export const loginAdmin = asyncHandler(async (req, res) => {
-  const { adminId, password } = req.body;
-  const admin = await Admin.findOne({ adminId: adminId?.toUpperCase()?.trim() }).select("+password");
-  if (!admin || !(await admin.comparePassword(password))) {
-    return res.status(401).json({ success: false, message: "Invalid Admin ID or password" });
+  const { adminId, email, password } = req.body;
+  if (!adminId && !email) {
+    return res.status(400).json({ success: false, message: "Provide adminId or email" });
+  }
+  const query = adminId
+    ? { adminId: adminId.toUpperCase().trim() }
+    : { email: email.toLowerCase().trim() };
+  const admin = await Admin.findOne(query).select("+password");
+  if (!password) {
+    return res.status(400).json({ success: false, message: "Password is required" });
+  }
+  if (!admin || !admin.password || !(await admin.comparePassword(password))) {
+    return res.status(401).json({ success: false, message: "Invalid credentials" });
   }
   const token = signToken({
     sub: admin._id.toString(),
