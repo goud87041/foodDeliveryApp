@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import client from "../api/client.js";
+import { OrderListSkeleton } from "../components/Skeleton.jsx";
 
 const labels = {
   pending: "Pending",
@@ -13,14 +14,21 @@ const labels = {
 export default function OrdersAdmin() {
   const [orders, setOrders] = useState([]);
   const [filter, setFilter] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true);
     const params = filter ? { status: filter } : {};
-    client.get("/orders/admin/all", { params }).then((res) => setOrders(res.data.orders));
+    client
+      .get("/orders/admin/all", { params })
+      .then((res) => setOrders(res.data.orders))
+      .finally(() => setLoading(false));
   }, [filter]);
 
+  if (loading) return <OrderListSkeleton />;
+
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 animate-fade-in">
       <div className="flex justify-between items-center flex-wrap gap-2">
         <h1 className="text-2xl font-bold">Orders</h1>
         <select className="border rounded-lg px-3 py-2 text-sm" value={filter} onChange={(e) => setFilter(e.target.value)}>
@@ -33,7 +41,7 @@ export default function OrdersAdmin() {
       </div>
       <div className="bg-white rounded-xl border divide-y">
         {orders.map((o) => (
-          <Link key={o._id} to={"/orders/" + o._id} className="block p-4 hover:bg-orange-50/50">
+          <Link key={o._id} to={"/orders/" + o._id} className="block p-4 hover:bg-orange-50/50 card-lift">
             <div className="flex justify-between">
               <span className="font-mono text-xs text-gray-400">{o._id}</span>
               <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-orange-100 text-orange-800">

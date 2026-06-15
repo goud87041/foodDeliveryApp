@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import client from "../api/client.js";
+import { ListRowsSkeleton, Skeleton } from "../components/Skeleton.jsx";
 
 export default function ReviewsAdmin() {
   const [reviews, setReviews] = useState([]);
   const [type, setType] = useState("");
   const [averages, setAverages] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   function load() {
     const params = {};
@@ -14,7 +16,13 @@ export default function ReviewsAdmin() {
   }
 
   useEffect(() => {
-    load();
+    setLoading(true);
+    const params = {};
+    if (type) params.type = type;
+    client
+      .get("/admin/reviews", { params })
+      .then((res) => setReviews(res.data.reviews))
+      .finally(() => setLoading(false));
   }, [type]);
 
   useEffect(() => {
@@ -29,10 +37,10 @@ export default function ReviewsAdmin() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       <h1 className="text-2xl font-bold">Reviews</h1>
-      {averages && (
-        <div className="grid sm:grid-cols-3 gap-4">
+      {averages ? (
+        <div className="grid sm:grid-cols-3 gap-4 stagger-children">
           <div className="bg-white border rounded-xl p-4">
             <p className="text-sm text-gray-500">Food avg</p>
             <p className="text-xl font-bold">{averages.food.avg}</p>
@@ -49,6 +57,12 @@ export default function ReviewsAdmin() {
             <p className="text-xs text-gray-400">{averages.restaurant.count} reviews</p>
           </div>
         </div>
+      ) : (
+        <div className="grid sm:grid-cols-3 gap-4">
+          {[1, 2, 3].map((i) => (
+            <Skeleton key={i} className="h-24 rounded-xl" />
+          ))}
+        </div>
       )}
       <div className="flex gap-2 flex-wrap">
         <select className="border rounded-lg px-3 py-2 text-sm" value={type} onChange={(e) => setType(e.target.value)}>
@@ -58,7 +72,10 @@ export default function ReviewsAdmin() {
           <option value="restaurant">Restaurant</option>
         </select>
       </div>
-      <div className="bg-white rounded-xl border divide-y">
+      {loading ? (
+        <ListRowsSkeleton rows={5} />
+      ) : (
+      <div className="bg-white rounded-xl border divide-y stagger-children">
         {reviews.map((r) => (
           <div key={r._id} className="p-4">
             <div className="flex justify-between gap-2">
@@ -77,6 +94,7 @@ export default function ReviewsAdmin() {
         ))}
         {reviews.length === 0 && <p className="p-8 text-center text-gray-500">No reviews</p>}
       </div>
+      )}
     </div>
   );
 }

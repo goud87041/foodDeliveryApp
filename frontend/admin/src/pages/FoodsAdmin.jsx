@@ -3,21 +3,24 @@ import toast from "react-hot-toast";
 import client from "../api/client.js";
 import { resolveMediaUrl } from "../lib/resolveMediaUrl.js";
 
+import { FormPageSkeleton } from "../components/Skeleton.jsx";
+
 const empty = { name: "", description: "", price: "", category: "", image: "", available: true };
 
 export default function FoodsAdmin() {
   const [foods, setFoods] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [form, setForm] = useState(empty);
   const [editing, setEditing] = useState(null);
   const [uploading, setUploading] = useState(false);
   const fileInputRef = useRef(null);
 
   function load() {
-    client.get("/admin/foods").then((res) => setFoods(res.data.foods));
+    return client.get("/admin/foods").then((res) => setFoods(res.data.foods));
   }
 
   useEffect(() => {
-    load();
+    load().finally(() => setLoading(false));
   }, []);
 
   async function save(e) {
@@ -79,8 +82,12 @@ export default function FoodsAdmin() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       <h1 className="text-2xl font-bold">Foods</h1>
+      {loading ? (
+        <FormPageSkeleton />
+      ) : (
+        <>
       <form onSubmit={save} className="bg-white rounded-xl border p-4 grid sm:grid-cols-2 gap-3 max-w-3xl">
         <input
           className="border rounded-lg px-3 py-2"
@@ -183,6 +190,8 @@ export default function FoodsAdmin() {
           </div>
         ))}
       </div>
+        </>
+      )}
     </div>
   );
 }

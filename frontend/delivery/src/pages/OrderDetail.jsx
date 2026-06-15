@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import client from "../api/client.js";
 import { useDeliveryAuth } from "../context/DeliveryAuth.jsx";
 import { createDeliverySocket } from "../lib/socket.js";
+import { OrderDetailSkeleton } from "../components/Skeleton.jsx";
 
 function mapsQuery(addr) {
   if (!addr) return "";
@@ -78,9 +79,7 @@ export default function OrderDetail() {
     }
   }
 
-  if (loading || !order) {
-    return <p className="p-8 text-center text-slate-500">Loading...</p>;
-  }
+  if (loading || !order) return <OrderDetailSkeleton />;
 
   const u = order.user || {};
   const pending = order.deliveryResponse === "pending";
@@ -88,7 +87,7 @@ export default function OrderDetail() {
   const mapUrl = order.address ? "https://www.google.com/maps/search/?api=1&query=" + mapsQuery(order.address) : null;
 
   return (
-    <div className="min-h-screen max-w-lg mx-auto px-4 py-6 pb-24">
+    <div className="min-h-screen max-w-lg mx-auto px-4 py-6 pb-24 animate-fade-in">
       <Link to="/" className="text-sm text-orange-600 font-medium mb-4 inline-block">
         Back to list
       </Link>
@@ -172,7 +171,7 @@ export default function OrderDetail() {
             type="button"
             disabled={busy}
             onClick={accept}
-            className="flex-1 py-3 rounded-xl bg-orange-500 text-white font-semibold hover:bg-orange-600 disabled:opacity-50"
+            className="flex-1 py-3 rounded-xl bg-orange-500 text-white font-semibold hover:bg-orange-600 disabled:opacity-50 btn-press"
           >
             Accept
           </button>

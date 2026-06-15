@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import client from "../api/client.js";
-import Loading from "../components/Loading.jsx";
+import { OrderListSkeleton } from "../components/Skeleton.jsx";
 
 const labels = {
   pending: "Pending",
@@ -22,16 +22,17 @@ export default function Orders() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <Loading />;
+  if (loading) return <OrderListSkeleton />;
 
   return (
     <div className="space-y-4 animate-fade-in">
       <h1 className="text-2xl font-bold">Order history</h1>
+      <div className="space-y-3 stagger-children">
       {orders.map((o) => (
         <Link
           key={o._id}
           to={"/orders/" + o._id}
-          className="block bg-white rounded-xl border border-orange-100 p-4 shadow-sm hover:shadow-md transition-shadow"
+          className="block bg-white rounded-xl border border-orange-100 p-4 shadow-sm card-lift"
         >
           <div className="flex justify-between items-center">
             <span className="font-mono text-sm text-gray-500">{o._id.slice(-8)}</span>
@@ -48,6 +49,7 @@ export default function Orders() {
           <p className="text-sm text-gray-500">{new Date(o.createdAt).toLocaleString()}</p>
         </Link>
       ))}
+      </div>
       {orders.length === 0 && <p className="text-gray-500">No orders yet.</p>}
     </div>
   );

@@ -7,6 +7,7 @@ import { Server } from "socket.io";
 import mongoose from "mongoose";
 import Order from "./models/Order.js";
 import { errorHandler, notFound } from "./middlewares/errorMiddleware.js";
+import { getCorsOptions, getSocketCorsOptions } from "./utils/corsConfig.js";
 
 import authRoutes from "./routes/authRoutes.js";
 import adminAuthRoutes from "./routes/adminAuthRoutes.js";
@@ -24,24 +25,13 @@ import uploadRoutes from "./routes/uploadRoutes.js";
 const app = express();
 const httpServer = createServer(app);
 
-const origins = (process.env.CLIENT_ORIGINS ||
-  "http://localhost:5173,http://localhost:5174,http://localhost:5175")
-  .split(",")
-  .map((s) => s.trim())
-  .filter(Boolean);
-
 const io = new Server(httpServer, {
-  cors: { origin: origins, methods: ["GET", "POST"] },
+  cors: getSocketCorsOptions(),
 });
 
 app.set("io", io);
 
-app.use(
-  cors({
-    origin: origins,
-    credentials: true,
-  })
-);
+app.use(cors(getCorsOptions()));
 app.use(express.json());
 
 /** Uploaded food images (public read) */
@@ -100,6 +90,7 @@ mongoose
     );
     httpServer.listen(PORT, () => {
       console.log(`Server listening on port ${PORT}`);
+      console.log("CORS: localhost allowed + CLIENT_ORIGINS + CLIENT_ORIGIN_PATTERNS (see .env.example)");
     });
   })
   .catch((err) => {

@@ -1,7 +1,7 @@
 import axios from "axios";
+import { getApiBaseUrl } from "../lib/config.js";
 
-const base = import.meta.env.VITE_API_URL ;
-const client = axios.create({ baseURL: base });
+const client = axios.create({ baseURL: getApiBaseUrl() });
 
 client.interceptors.request.use((config) => {
   const t = localStorage.getItem("admin_token");

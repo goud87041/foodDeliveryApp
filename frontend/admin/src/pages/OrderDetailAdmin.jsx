@@ -2,14 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import client from "../api/client.js";
-import { io } from "socket.io-client";
-
-function socketUrl() {
-  const u = import.meta.env.VITE_SOCKET_URL;
-  if (u) return u;
-  if (import.meta.env.DEV) return "http://localhost:5000";
-  return window.location.origin;
-}
+import { createAdminSocket } from "../lib/socket.js";
+import { OrderDetailSkeleton } from "../components/Skeleton.jsx";
 
 export default function OrderDetailAdmin() {
   const { id } = useParams();
@@ -32,7 +26,7 @@ export default function OrderDetailAdmin() {
   }, [id]);
 
   useEffect(() => {
-    const s = io(socketUrl());
+    const s = createAdminSocket();
     s.emit("join:admin");
     function onUp(payload) {
       if (payload.orderId === id || (payload.order && payload.order._id === id)) {
@@ -68,10 +62,10 @@ export default function OrderDetailAdmin() {
     }
   }
 
-  if (!order) return <p className="p-8">Loading...</p>;
+  if (!order) return <OrderDetailSkeleton />;
 
   return (
-    <div className="max-w-2xl space-y-6">
+    <div className="max-w-2xl space-y-6 animate-fade-in">
       <Link to="/orders" className="text-sm text-orange-600">
         Back to orders
       </Link>

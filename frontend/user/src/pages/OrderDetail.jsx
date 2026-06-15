@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import client from "../api/client.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { createUserSocket } from "../lib/socket.js";
-import Loading from "../components/Loading.jsx";
+import { OrderDetailSkeleton } from "../components/Skeleton.jsx";
 import StarRating from "../components/StarRating.jsx";
 
 const statusLabel = {
@@ -131,7 +131,7 @@ export default function OrderDetail() {
     });
   }
 
-  if (loading || !order) return <Loading />;
+  if (loading || !order) return <OrderDetailSkeleton />;
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">

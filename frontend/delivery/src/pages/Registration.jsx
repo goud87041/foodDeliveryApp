@@ -3,6 +3,7 @@ import { Navigate, useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import client from "../api/client.js";
 import { useDeliveryAuth } from "../context/DeliveryAuth.jsx";
+import { AuthGateSkeleton } from "../components/Skeleton.jsx";
 
 export default function Registration() {
   const [name, setName] = useState("");
@@ -13,7 +14,7 @@ export default function Registration() {
   const { partner, loading, login } = useDeliveryAuth();
   const nav = useNavigate();
 
-  if (loading) return <p className="p-8 text-center">Loading...</p>;
+  if (loading) return <AuthGateSkeleton />;
   if (partner) return <Navigate to="/" replace />;
 
   async function submit(e) {
@@ -34,7 +35,7 @@ export default function Registration() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-orange-50 to-white">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg border border-orange-100 p-8">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg border border-orange-100 p-8 animate-fade-in-up">
         <h1 className="text-2xl font-bold text-orange-500">Become a Delivery Partner</h1>
         <p className="text-sm text-slate-500 mt-1">Sign up to receive and fulfill delivery offers</p>
         <form onSubmit={submit} className="mt-8 space-y-4">

@@ -53,14 +53,39 @@ npm run dev
 
 Open `http://localhost:5175`. Partners log in with email/password (seed accounts e.g. `vikram@delivery.com` / `delivery123`). They can **accept** or **reject** new offers and view full order details (customer, address, items, maps link).
 
-Ensure `CLIENT_ORIGINS` in backend `.env` includes `http://localhost:5173`, `http://localhost:5174`, and `http://localhost:5175` (default in `.env.example`).
+Ensure `CLIENT_ORIGINS` in backend `.env` includes your **local** and **deployed** frontend URLs (see below).
+
+## Local vs deployed (CORS + API URLs)
+
+### Local development (default)
+- Frontends: `npm run dev` on ports **5173 / 5174 / 5175**
+- Backend: `npm run dev` on **5000**
+- Leave frontend `VITE_*` env vars **empty** — Vite proxies `/api` and `/uploads` to the backend
+- Backend allows `localhost` and `127.0.0.1` on any port automatically
+
+### Production (split deploy — e.g. Vercel + Render)
+
+**Backend `.env`:**
+```env
+CLIENT_ORIGINS=https://your-user-app.vercel.app,https://your-admin-app.vercel.app,https://your-delivery-app.vercel.app
+# Optional: allow all Vercel preview URLs
+CLIENT_ORIGIN_PATTERNS=^https://.*\.vercel\.app$
+```
+
+**Each frontend** (set in hosting dashboard before build):
+```env
+VITE_API_URL=https://your-api.onrender.com/api
+VITE_SOCKET_URL=https://your-api.onrender.com
+```
+
+Restart/redeploy the backend after changing `CLIENT_ORIGINS`.
 
 ## Environment
 
 | App | Variables |
 |-----|-----------|
-| Backend | `PORT`, `MONGODB_URI`, `JWT_SECRET`, `CLIENT_ORIGINS`, optional `SMTP_*`, `RAZORPAY_*` |
-| Frontends | Optional `VITE_API_URL`, `VITE_SOCKET_URL` if not using the dev proxy |
+| Backend | `PORT`, `MONGODB_URI`, `JWT_SECRET`, `CLIENT_ORIGINS`, `CLIENT_ORIGIN_PATTERNS`, `CORS_ALLOW_LOCALHOST` |
+| Frontends | `VITE_API_URL`, `VITE_SOCKET_URL` (only needed when API is on a different host than the UI) |
 
 If Razorpay keys are omitted, checkout marks orders paid in **mock** mode for local development.
 

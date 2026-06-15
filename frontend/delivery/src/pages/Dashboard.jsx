@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import client from "../api/client.js";
 import { useDeliveryAuth } from "../context/DeliveryAuth.jsx";
 import { createDeliverySocket } from "../lib/socket.js";
+import { DeliveryDashboardSkeleton } from "../components/Skeleton.jsx";
 
 export default function Dashboard() {
   const { partner, logout } = useDeliveryAuth();
@@ -52,9 +53,9 @@ export default function Dashboard() {
       </header>
 
       {loading ? (
-        <p className="text-center text-slate-500 py-12">Loading orders...</p>
+        <DeliveryDashboardSkeleton />
       ) : (
-        <div className="space-y-8">
+        <div className="space-y-8 animate-fade-in">
           <section>
             <h2 className="text-sm font-semibold text-orange-600 uppercase tracking-wide mb-3">New offers</h2>
             {pending.length === 0 ? (
@@ -65,7 +66,7 @@ export default function Dashboard() {
                   <li key={o._id}>
                     <Link
                       to={"/orders/" + o._id}
-                      className="block bg-white rounded-xl border-2 border-orange-200 p-4 shadow-sm hover:border-orange-400 transition-colors"
+                      className="block bg-white rounded-xl border-2 border-orange-200 p-4 shadow-sm card-lift"
                     >
                       <div className="flex justify-between items-center">
                         <span className="font-mono text-xs text-slate-400">{o._id.slice(-8)}</span>
@@ -90,7 +91,7 @@ export default function Dashboard() {
                   <li key={o._id}>
                     <Link
                       to={"/orders/" + o._id}
-                      className="block bg-white rounded-xl border border-slate-200 p-4 shadow-sm hover:border-orange-300 transition-colors"
+                      className="block bg-white rounded-xl border border-slate-200 p-4 shadow-sm card-lift"
                     >
                       <div className="flex justify-between items-center">
                         <span className="font-mono text-xs text-slate-400">{o._id.slice(-8)}</span>

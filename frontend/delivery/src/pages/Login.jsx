@@ -3,6 +3,7 @@ import { Navigate, useNavigate, Link } from "react-router-dom";
 import toast from "react-hot-toast";
 import client from "../api/client.js";
 import { useDeliveryAuth } from "../context/DeliveryAuth.jsx";
+import { AuthGateSkeleton } from "../components/Skeleton.jsx";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -11,7 +12,7 @@ export default function Login() {
   const { partner, loading, login } = useDeliveryAuth();
   const nav = useNavigate();
 
-  if (loading) return <p className="p-8 text-center">Loading...</p>;
+  if (loading) return <AuthGateSkeleton />;
   if (partner) return <Navigate to="/" replace />;
 
   async function submit(e) {
@@ -32,7 +33,7 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-gradient-to-b from-orange-50 to-white">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg border border-orange-100 p-8">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg border border-orange-100 p-8 animate-fade-in-up">
         <h1 className="text-2xl font-bold text-orange-500">Delivery partner</h1>
         <p className="text-sm text-slate-500 mt-1">Sign in to view and respond to delivery offers</p>
         <form onSubmit={submit} className="mt-8 space-y-4">
@@ -55,7 +56,7 @@ export default function Login() {
           <button
             type="submit"
             disabled={busy}
-            className="w-full py-3 rounded-xl bg-orange-500 text-white font-semibold hover:bg-orange-600 disabled:opacity-60"
+            className="w-full py-3 rounded-xl bg-orange-500 text-white font-semibold hover:bg-orange-600 disabled:opacity-60 btn-press"
           >
             {busy ? "Signing in..." : "Sign in"}
           </button>

@@ -3,6 +3,7 @@ import { Link, useNavigate, Navigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import client from "../api/client.js";
 import { useAdminAuth } from "../context/AdminAuth.jsx";
+import { AuthGateSkeleton } from "../components/Skeleton.jsx";
 
 export default function AdminLogin() {
   const [adminId, setAdminId] = useState("");
@@ -11,7 +12,7 @@ export default function AdminLogin() {
   const { login, admin, loading } = useAdminAuth();
   const nav = useNavigate();
 
-  if (loading) return <p className="p-8 text-center">Loading...</p>;
+  if (loading) return <AuthGateSkeleton />;
   if (admin) return <Navigate to="/" replace />;
 
   async function submit(e) {
@@ -32,7 +33,7 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">
-      <form onSubmit={submit} className="w-full max-w-md bg-white rounded-2xl shadow-card border border-orange-100 p-8">
+      <form onSubmit={submit} className="w-full max-w-md bg-white rounded-2xl shadow-card border border-orange-100 p-8 animate-fade-in-scale">
         <h1 className="text-2xl font-bold text-orange-500">Admin login</h1>
         <p className="text-sm text-gray-500 mt-1">Admin ID and password</p>
         <div className="mt-6 space-y-4">

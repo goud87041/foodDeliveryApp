@@ -28,7 +28,7 @@ export default function Login() {
   }
 
   return (
-    <div className="max-w-md mx-auto bg-white rounded-2xl shadow-card border border-orange-100 p-8 animate-fade-in">
+    <div className="max-w-md mx-auto bg-white rounded-2xl shadow-card border border-orange-100 p-8 animate-fade-in-up">
       <h1 className="text-2xl font-bold text-gray-900">Log in</h1>
       <p className="text-sm text-gray-500 mt-1">Use your email and password</p>
       <form onSubmit={submit} className="mt-6 space-y-4">
@@ -55,7 +55,7 @@ export default function Login() {
         <button
           type="submit"
           disabled={busy}
-          className="w-full py-3 rounded-xl bg-orange-500 text-white font-semibold hover:bg-orange-600 disabled:opacity-60"
+          className="w-full py-3 rounded-xl bg-orange-500 text-white font-semibold hover:bg-orange-600 disabled:opacity-60 btn-press"
         >
           {busy ? "Please wait..." : "Log in"}
         </button>

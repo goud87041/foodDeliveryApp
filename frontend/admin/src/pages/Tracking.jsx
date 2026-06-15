@@ -1,38 +1,36 @@
 import { useEffect, useState } from "react";
 import client from "../api/client.js";
-import { io } from "socket.io-client";
-
-function socketUrl() {
-  const u = import.meta.env.VITE_SOCKET_URL;
-  if (u) return u;
-  if (import.meta.env.DEV) return "http://localhost:5000";
-  return window.location.origin;
-}
+import { createAdminSocket } from "../lib/socket.js";
+import { TrackingSkeleton } from "../components/Skeleton.jsx";
 
 const statusLabel = { idle: "Idle", active: "Active", on_delivery: "On delivery" };
 
 export default function Tracking() {
   const [boys, setBoys] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   function load() {
-    client.get("/admin/delivery-boys").then((res) => setBoys(res.data.deliveryBoys));
+    return client.get("/admin/delivery-boys").then((res) => setBoys(res.data.deliveryBoys));
   }
 
   useEffect(() => {
-    load();
-    const s = io(socketUrl());
+    load().finally(() => setLoading(false));
+    const s = createAdminSocket();
     s.emit("join:admin");
     s.on("delivery:location", () => load());
     return () => s.disconnect();
   }, []);
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 animate-fade-in">
       <h1 className="text-2xl font-bold">Delivery partners</h1>
       <p className="text-sm text-gray-500">Live status updates via Socket.io</p>
-      <div className="grid md:grid-cols-2 gap-4">
+      {loading ? (
+        <TrackingSkeleton />
+      ) : (
+      <div className="grid md:grid-cols-2 gap-4 stagger-children">
         {boys.map((b) => (
-          <div key={b._id} className="bg-white rounded-xl border p-4">
+          <div key={b._id} className="bg-white rounded-xl border p-4 card-lift">
             <p className="font-semibold">{b.name}</p>
             <p className="text-sm text-gray-500">{b.email}</p>
             <p className="mt-2 text-sm">
@@ -47,6 +45,7 @@ export default function Tracking() {
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 }

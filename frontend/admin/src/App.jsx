@@ -13,10 +13,11 @@ import Tracking from "./pages/Tracking.jsx";
 import ChefsAdmin from "./pages/ChefsAdmin.jsx";
 import FoodsAdmin from "./pages/FoodsAdmin.jsx";
 import ReviewsAdmin from "./pages/ReviewsAdmin.jsx";
+import { AuthGateSkeleton } from "./components/Skeleton.jsx";
 
 function Private({ children }) {
   const { admin, loading } = useAdminAuth();
-  if (loading) return <p className="p-8">Loading...</p>;
+  if (loading) return <AuthGateSkeleton />;
   if (!admin) return <Navigate to="/login" replace />;
   return children;
 }

@@ -1,7 +1,7 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import Layout from "./components/Layout.jsx";
 import { useAuth } from "./context/AuthContext.jsx";
-import Loading from "./components/Loading.jsx";
+import { AuthGateSkeleton } from "./components/Skeleton.jsx";
 
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
@@ -17,7 +17,7 @@ import RestaurantPage from "./pages/RestaurantPage.jsx";
 
 function Private({ children }) {
   const { user, loading } = useAuth();
-  if (loading) return <Loading />;
+  if (loading) return <AuthGateSkeleton />;
   if (!user) return <Navigate to="/login" replace />;
   return children;
 }

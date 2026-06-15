@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useNavigate, useLocation } from "react-router-dom";
 import { useAdminAuth } from "../context/AdminAuth.jsx";
 
 function navClass({ isActive }) {
@@ -11,6 +11,7 @@ function navClass({ isActive }) {
 export default function Layout() {
   const { admin, logout } = useAdminAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   return (
     <div className="min-h-screen flex">
@@ -54,7 +55,9 @@ export default function Layout() {
         </button>
       </aside>
       <div className="flex-1 overflow-auto p-6">
-        <Outlet />
+        <div key={location.pathname} className="animate-page-enter">
+          <Outlet />
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import axios from "axios";
+import { getApiBaseUrl } from "../lib/config.js";
 
-const client = axios.create({ baseURL: import.meta.env.VITE_API_URL || "/api" });
+const client = axios.create({ baseURL: getApiBaseUrl() });
 
 client.interceptors.request.use((config) => {
   const t = localStorage.getItem("delivery_token");

@@ -1,18 +1,20 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import client from "../api/client.js";
+import { ListRowsSkeleton } from "../components/Skeleton.jsx";
 
 export default function ChefsAdmin() {
   const [chefs, setChefs] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
 
   function load() {
-    client.get("/admin/chefs").then((res) => setChefs(res.data.chefs));
+    return client.get("/admin/chefs").then((res) => setChefs(res.data.chefs));
   }
 
   useEffect(() => {
-    load();
+    load().finally(() => setLoading(false));
   }, []);
 
   async function add(e) {
@@ -34,8 +36,12 @@ export default function ChefsAdmin() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-in">
       <h1 className="text-2xl font-bold">Chefs</h1>
+      {loading ? (
+        <ListRowsSkeleton rows={4} />
+      ) : (
+        <>
       <form onSubmit={add} className="bg-white rounded-xl border p-4 flex flex-wrap gap-3 items-end max-w-xl">
         <div>
           <label className="text-xs text-gray-500">Name</label>
@@ -62,6 +68,8 @@ export default function ChefsAdmin() {
           </li>
         ))}
       </ul>
+        </>
+      )}
     </div>
   );
 }

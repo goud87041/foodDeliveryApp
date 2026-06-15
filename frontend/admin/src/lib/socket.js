@@ -3,7 +3,7 @@ import { getSocketUrl } from "./config.js";
 
 export { getSocketUrl } from "./config.js";
 
-export function createDeliverySocket() {
+export function createAdminSocket() {
   return io(getSocketUrl(), {
     transports: ["websocket", "polling"],
     withCredentials: true,

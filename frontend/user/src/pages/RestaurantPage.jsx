@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import client from "../api/client.js";
-import Loading from "../components/Loading.jsx";
+import { RestaurantSkeleton } from "../components/Skeleton.jsx";
 import StarRating from "../components/StarRating.jsx";
 
 export default function RestaurantPage() {
@@ -20,7 +20,7 @@ export default function RestaurantPage() {
       .finally(() => setLoading(false));
   }, []);
 
-  if (loading) return <Loading />;
+  if (loading) return <RestaurantSkeleton />;
 
   return (
     <div className="max-w-2xl mx-auto space-y-8 animate-fade-in">

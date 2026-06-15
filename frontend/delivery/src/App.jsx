@@ -4,10 +4,11 @@ import Login from "./pages/Login.jsx";
 import Registration from "./pages/Registration.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import OrderDetail from "./pages/OrderDetail.jsx";
+import { AuthGateSkeleton } from "./components/Skeleton.jsx";
 
 function Private({ children }) {
   const { partner, loading } = useDeliveryAuth();
-  if (loading) return <p className="p-8 text-center text-slate-500">Loading...</p>;
+  if (loading) return <AuthGateSkeleton />;
   if (!partner) return <Navigate to="/login" replace />;
   return children;
 }

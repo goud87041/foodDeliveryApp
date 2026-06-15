@@ -1,4 +1,4 @@
-import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext.jsx";
 import { useCart } from "../context/CartContext.jsx";
 
@@ -6,6 +6,7 @@ export default function Layout({ children }) {
   const { user, logout } = useAuth();
   const { items } = useCart();
   const nav = useNavigate();
+  const location = useLocation();
   const count = items.reduce((s, x) => s + x.quantity, 0);
 
   const linkClass = ({ isActive }) =>
@@ -41,7 +42,7 @@ export default function Layout({ children }) {
           <div className="flex items-center gap-2">
             <Link
               to="/cart"
-              className="relative px-4 py-2 rounded-xl bg-orange-500 text-white text-sm font-semibold shadow-card hover:bg-orange-600 transition-colors"
+              className="relative px-4 py-2 rounded-xl bg-orange-500 text-white text-sm font-semibold shadow-card hover:bg-orange-600 transition-colors btn-press"
             >
               Cart
               {count > 0 && (
@@ -69,7 +70,11 @@ export default function Layout({ children }) {
           </div>
         </div>
       </header>
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8">{children}</main>
+      <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-8">
+        <div key={location.pathname} className="animate-page-enter">
+          {children}
+        </div>
+      </main>
       <footer className="border-t border-orange-100 bg-white py-6 text-center text-sm text-gray-500">
         © {new Date().getFullYear()} FoodDelivery — Fresh & fast
       </footer>

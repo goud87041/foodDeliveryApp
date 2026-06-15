@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import client from "../api/client.js";
 import { resolveMediaUrl } from "../lib/resolveMediaUrl.js";
 import { useCart } from "../context/CartContext.jsx";
-import Loading from "../components/Loading.jsx";
+import { MenuGridSkeleton } from "../components/Skeleton.jsx";
 import StarRating from "../components/StarRating.jsx";
 
 export default function Home() {
@@ -23,7 +23,7 @@ export default function Home() {
 
   const categories = Array.from(new Set(foods.map((f) => f.category).filter(Boolean)));
 
-  if (loading) return <Loading label="Loading menu..." />;
+  if (loading) return <MenuGridSkeleton />;
 
   return (
     <div className="space-y-8 animate-fade-in">
@@ -68,7 +68,7 @@ export default function Home() {
         {foods.map((food, idx) => (
           <article
             key={food._id}
-            className="bg-white rounded-2xl shadow-card border border-orange-50 overflow-hidden hover:shadow-lg transition-all duration-300 animate-fade-in"
+            className="bg-white rounded-2xl shadow-card border border-orange-50 overflow-hidden card-lift animate-fade-in"
             style={{ animationDelay: String(idx * 40) + "ms" }}
           >
             <div className="h-48 bg-orange-50 overflow-hidden">
@@ -101,7 +101,7 @@ export default function Home() {
                   addItem(food);
                   toast.success("Added to cart");
                 }}
-                className="w-full mt-2 py-2.5 rounded-xl bg-orange-500 text-white font-semibold text-sm hover:bg-orange-600 disabled:opacity-50 transition-colors"
+                className="w-full mt-2 py-2.5 rounded-xl bg-orange-500 text-white font-semibold text-sm hover:bg-orange-600 disabled:opacity-50 btn-press"
               >
                 {food.available ? "Add to cart" : "Unavailable"}
               </button>

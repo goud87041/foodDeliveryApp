@@ -2,15 +2,18 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import client from "../api/client.js";
 
+import { ListRowsSkeleton } from "../components/Skeleton.jsx";
+
 export default function UsersAdmin() {
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   function load() {
-    client.get("/admin/users").then((res) => setUsers(res.data.users));
+    return client.get("/admin/users").then((res) => setUsers(res.data.users));
   }
 
   useEffect(() => {
-    load();
+    load().finally(() => setLoading(false));
   }, []);
 
   async function block(id) {
@@ -26,9 +29,12 @@ export default function UsersAdmin() {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 animate-fade-in">
       <h1 className="text-2xl font-bold">Users</h1>
-      <div className="bg-white rounded-xl border divide-y">
+      {loading ? (
+        <ListRowsSkeleton rows={6} />
+      ) : (
+      <div className="bg-white rounded-xl border divide-y stagger-children">
         {users.map((u) => (
           <div key={u._id} className="p-4 flex justify-between items-center flex-wrap gap-2">
             <div>
@@ -50,6 +56,7 @@ export default function UsersAdmin() {
           </div>
         ))}
       </div>
+      )}
     </div>
   );
 }

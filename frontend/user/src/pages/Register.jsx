@@ -45,7 +45,7 @@ export default function Register() {
   }
 
   return (
-    <div className="max-w-lg mx-auto bg-white rounded-2xl shadow-card border border-orange-100 p-8 animate-fade-in">
+    <div className="max-w-lg mx-auto bg-white rounded-2xl shadow-card border border-orange-100 p-8 animate-fade-in-up">
       <h1 className="text-2xl font-bold text-gray-900">Register</h1>
       <form onSubmit={submit} className="mt-6 grid gap-4 sm:grid-cols-2">
         <div className="sm:col-span-2">
